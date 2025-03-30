@@ -1,18 +1,33 @@
-import jwt from "jsonwebtoken";
-const JWT_SECRET = process.env.JWT_SECRET;
+import admin from "firebase-admin";
 
-const authMiddleware = (req, res, next) => {
-	const token = req.headers.authorization?.split(" ")[1];
-	if (!token) return res.status(401).json({ message: "Unauthorized" });
+// Initialize Firebase Admin SDK (only once in your backend)
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_API_KEY.replace(/\\n/g, '\n'),
+    }),
+  });
+}
 
-	try {
-		const decoded = jwt.verify(token, JWT_SECRET);
-		req.user = decoded;
-		console.log("printing req.user ", decoded);
-		next();
-	} catch (err) {
-		res.status(401).json({ message: "Invalid token" });
-	}
+const authenticateFirebaseUser = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1]; // Get token from headers
+    // console.log("tokwn", token);
+    // console.log("req headser", req.headers);
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
+
+    // ✅ Verify Firebase ID Token
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    // console.log(decodedToken);
+    // ✅ Attach UID to req.user_id for future routes
+    req.user_id = decodedToken.uid;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Unauthorized: Invalid token" });
+  }
 };
-
-export default authMiddleware;
+export default authenticateFirebaseUser

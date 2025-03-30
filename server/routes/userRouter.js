@@ -1,32 +1,47 @@
 import express from "express";
-import authMiddleware from "../middleware/auth.js";
 import Stripe from "stripe";
 import pool from "../db.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 dotenv.config();
+import  authenticateFirebaseUser  from "../middleware/auth.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const userRouter = express.Router();
 
-userRouter.use(authMiddleware);
+//userRouter.use(authMiddleware);
 //temporary route
 userRouter.post("/register", async (req, res) => {
 	try {
 		//console.log("register route ",req.body);
-		const { user_id, mess_id, email, password } = req.body;
-		const hashedPassword = await bcrypt.hash(password, 10);
-		await pool.query(
-			"INSERT INTO users (user_id ,email, password, mess_id) VALUES ($1, $2, $3,$4)",
-			[user_id, email, hashedPassword, mess_id]
-		);
-		res.json({ message: "User registered successfully" });
+		const { uid, email } = req.body;
+   
+    const res1=await pool.query("select * from users where user_id=$1",[uid]);
+    if(res1.rowCount==0){
+      return res.status(201).json({message:"User IS NEW"});
+    }
+
+    // req.user.user_id=uid;
+    // req.user.email=email;
+		res.json({ message: "User Login successfully" });
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({ message: "Internal server error" });
 	}
 });
+userRouter.post("/insert-mess", async (req, res) => {
+  const {uid, email, mess_id} = req.body;
+  const inserteduser = await pool.query(
+			"INSERT INTO users (user_id ,email, mess_id) VALUES ($1, $2, $3) RETURNING *",
+			[uid, email, mess_id] 
+		);
+    // req.user_id=uid;
+    // req.email=email;
+	// console.log("inserted" ,inserteduser.rows);
+  res.status(200).json({ message: "User Login successfully" });
+
+})
 //temporary route
 userRouter.post("/login", async (req, res) => {
 	try {
@@ -54,8 +69,29 @@ userRouter.post("/login", async (req, res) => {
 	}
 });
 
+userRouter.get("/get-announcements", async (req, res) => {
+	try {
+		const announcements = await pool.query(`SELECT * FROM Announcements`);
+
+		if (announcements.rows.length === 0) {
+			return res.status(404).json({
+				message: "No announcements found",
+			});
+		}
+
+		return res.status(200).json({
+			announcements: announcements.rows,
+		});
+	} catch (err) {
+		console.log(err);
+		return res.status(500).json({
+			message: "Error fetching announcements",
+		});
+	}
+});
+
 //to get todays special item
-userRouter.get("/menu", authMiddleware, async (req, res) => {
+userRouter.get("/menu",async (req, res) => {
 	try {
 		const result = await pool.query(
 			`SELECT tsi.*, si.name, si.url 
@@ -72,7 +108,7 @@ userRouter.get("/menu", authMiddleware, async (req, res) => {
 });
 
 //to get non redeemed orders
-userRouter.get("/orders", async (req, res) => {
+userRouter.get("/orders",authenticateFirebaseUser, async (req, res) => {
 	try {
 		console.log("print req.user ", req.user);
 		const userId = req.user_id;
@@ -89,7 +125,7 @@ userRouter.get("/orders", async (req, res) => {
 });
 
 //to redirect the qr to link this route is there
-userRouter.get("/orders/:orderId", async (req, res) => {
+userRouter.get("/orders/:orderId",authenticateFirebaseUser, async (req, res) => {
 	try {
 		const { orderId } = req.params;
 		const orderRes = await pool.query(
@@ -117,9 +153,9 @@ userRouter.get("/orders/:orderId", async (req, res) => {
 });
 
 //route to submit mess change request
-userRouter.post("/request-mess-change", async (req, res) => {
+userRouter.post("/request-mess-change",authenticateFirebaseUser, async (req, res) => {
 	try {
-		const userId = req.user.user_id;
+		const userId = req.user_id;
 		const { requested_mess_id } = req.body;
 		if (!requested_mess_id) {
 			return res.status(400).json({
@@ -157,7 +193,7 @@ userRouter.post("/request-mess-change", async (req, res) => {
 });
 
 //to get redeemed orders to submit review
-userRouter.get("/redeemed-orders", async (req, res) => {
+userRouter.get("/redeemed-orders",authenticateFirebaseUser, async (req, res) => {
 	try {
 		const userId = req.user_id;
 		const orderRes = await pool.query(
@@ -183,7 +219,7 @@ userRouter.get("/menu-image", async (req, res) => {
 });
 
 //to submit review
-userRouter.post("/review", async (req, res) => {
+userRouter.post("/review", authenticateFirebaseUser,async (req, res) => {
 	try {
 		const userId = req.user_id;
 		const { item_id, rating, content } = req.body;
@@ -199,7 +235,7 @@ userRouter.post("/review", async (req, res) => {
 });
 
 //to create order
-userRouter.post("/create-order", async (req, res) => {
+userRouter.post("/create-order", authenticateFirebaseUser,async (req, res) => {
 	try {
 		const userId = req.user_id;
 		const { items } = req.body; //item.item_id,item.quantity
@@ -236,7 +272,7 @@ userRouter.post("/create-order", async (req, res) => {
 });
 
 //checkout,payment
-userRouter.post("/checkout", async (req, res) => {
+userRouter.post("/checkout", authenticateFirebaseUser,async (req, res) => {
 	try {
 		const { order_id } = req.body;
 		if (!order_id)
@@ -279,7 +315,7 @@ userRouter.post("/checkout", async (req, res) => {
 			line_items,
 			mode: "payment",
 			client_reference_id: String(order_id),
-			success_url: `${process.env.FRONTEND_URL}/success`, //these urls are of frontend ok
+			success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`, //these urls are of frontend ok
 			cancel_url: `${process.env.FRONTEND_URL}/cancel`,
 		});
 		res.json({ sessionUrl: session.url });
@@ -289,8 +325,9 @@ userRouter.post("/checkout", async (req, res) => {
 	}
 });
 //to update payment status as paidre
-userRouter.post("/payment-success", async (req, res) => {
+userRouter.post("/payment-success",authenticateFirebaseUser, async (req, res) => {
 	try {
+		console.log("in payment aucccse")
 		const { session_id } = req.body;
 		if (!session_id)
 			return res.status(400).json({ message: "Session ID is required" });
@@ -302,7 +339,7 @@ userRouter.post("/payment-success", async (req, res) => {
 		const order_id = session.client_reference_id;
 
 		await pool.query(
-			`UPDATE orders SET payment_status = 'paid' WHERE order_id = $1`,
+			`UPDATE orders SET payment_status = 'success' WHERE order_id = $1`,
 			[order_id]
 		);
 

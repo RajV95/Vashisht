@@ -136,15 +136,15 @@ adminRouter.get("/get-announcements", async (req, res) => {
 adminRouter.get("/get-orders", async (req, res) => {
 	try {
 		const orders = await pool.query(
-			`SELECT OI.quantity, S.name FROM  
-            Orders O 
-            JOIN Order_items OI 
-            ON O.order_id = OI.order_id 
-            JOIN Special_items S
-            ON S.item_id = OI.item_id
-            WHERE O.is_redeemed = $1`,
+			`SELECT S.item_id, S.name, SUM(OI.quantity) AS total_quantity
+			FROM Orders O
+			JOIN Order_items OI ON O.order_id = OI.order_id
+			JOIN Special_items S ON S.item_id = OI.item_id
+			WHERE O.is_redeemed = $1
+			GROUP BY S.item_id, S.name`,
 			[false]
 		);
+		
 
 		if (orders.rows.length === 0) {
 			return res.status(404).json({
