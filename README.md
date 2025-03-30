@@ -5,6 +5,7 @@ The **Smart Mess Management System** is a web-based platform designed to streaml
 
 ### 🎥 **Project Demo**  
 🔗 **Watch the Video Here:** [Click to Watch](https://drive.google.com/file/d/1h6Tg1MnLMVWkQkoTorDR80-_TehwWID6/view?usp=sharing)  
+**Deployed Links** are available to the Side of the GitHub Repo Page
 
 ## Features
 ### **Special Item Booking System**
