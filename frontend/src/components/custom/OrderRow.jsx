@@ -72,7 +72,7 @@ const OrderRow = ({ order }) => {
       {/* <p>{typeof(order.qr)}</p> */}
       <CardContent className="p-4">
         <div className="flex items-start gap-4">
-          {/* Image (Left Side) */}
+          {/* Image (Left Side)
           <div className="flex-shrink-0 w-24 h-24 rounded-md overflow-hidden border border-gray-200 bg-gray-100">
             <img
               src={order.qr || "/placeholder-food.jpg"}
@@ -83,12 +83,12 @@ const OrderRow = ({ order }) => {
                 e.target.className = "w-full h-full object-contain p-2";
               }}
             />
-          </div>
+          </div> */}
 
           {/* Content (Right Side) */}
           <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h3 className="font-medium text-gray-900">{order.item}</h3>
+              <h3 className="font-medium text-gray-900">Order Number : {order.order_id}</h3>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500">
                 <div className="flex items-center">
                   <CalendarDays className="w-4 h-4 mr-1 flex-shrink-0" />
