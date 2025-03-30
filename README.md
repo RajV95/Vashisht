@@ -30,12 +30,14 @@ cd mess-management
 ```sh
 cd admin
 npm install
-cd ..
+```
+```sh
+cd server
+npm install
+```
+```sh
 cd frontend
 npm install
-cd ..
-cd server
-cd install
 ```
 
 ### **3. Configure Environment Variables**
