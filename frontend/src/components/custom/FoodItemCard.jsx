@@ -2,12 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 const FoodItemCard = ({ item, quantity, onIncrement, onDecrement }) => {
+  console.log(item)
   return (
     <div className="flex flex-col h-full border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
       {/* Image */}
       <div className="aspect-square overflow-hidden bg-gray-100">
         <img
-          src={item.imgUrl}
+          src={item.url}
           alt={item.name}
           className="w-full h-full object-cover transition-transform hover:scale-105"
           onError={(e) => {
