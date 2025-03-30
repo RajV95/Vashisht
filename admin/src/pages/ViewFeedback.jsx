@@ -25,7 +25,7 @@ const mockFeedbackData = [
     id: 1,
     itemName: "Chicken Biryani",
     dateServed: "2023-10-15",
-    ratings: [4, 5, 3, 4, 5, 2, 4],
+    ratings: [4, 4,4,4,4,4],
     feedbacks: [
       "Less Quantity",
       "Good but could use more spices",
@@ -33,12 +33,12 @@ const mockFeedbackData = [
   },
   {
     id: 2,
-    itemName: "Paneer Tikka",
+    itemName: "Masala Dosa",
     dateServed: "2023-10-16",
-    ratings: [5, 4, 5, 5, 4],
+    ratings: [3,3,3,3],
     feedbacks: [
-      "Panner is Sour In taste",
-      "Not Soft enough"
+      "Chutney is Good",
+      "Little bit Sour"
     ]
   },
   // Add more items as needed
