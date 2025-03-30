@@ -27,11 +27,8 @@ const mockFeedbackData = [
     dateServed: "2023-10-15",
     ratings: [4, 5, 3, 4, 5, 2, 4],
     feedbacks: [
-      "Great flavor but a bit dry",
-      "Excellent!",
+      "Less Quantity",
       "Good but could use more spices",
-      "Perfectly cooked",
-      "Too salty",
     ]
   },
   {
@@ -40,10 +37,8 @@ const mockFeedbackData = [
     dateServed: "2023-10-16",
     ratings: [5, 4, 5, 5, 4],
     feedbacks: [
-      "Best paneer I've had!",
-      "Very tasty",
-      "Could be more crispy",
-      "Perfect texture"
+      "Panner is Sour In taste",
+      "Not Soft enough"
     ]
   },
   // Add more items as needed
