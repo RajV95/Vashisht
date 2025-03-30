@@ -60,12 +60,12 @@ adminRouter.post("/add-special-item", async (req, res) => {
 // To add an announcement in the main page
 adminRouter.post("/add-announcement", async (req, res) => {
 	try {
-		const { mess_id, content, start_time, end_time } = req.body;
+		const { content, start_time, end_time } = req.body;
 
 		const insertAnnouncement = await pool.query(
-			`INSERT INTO Announcements (mess_id, content, start_time, end_time) 
-			VALUES ($1, $2, $3, $4) RETURNING *`,
-			[mess_id, content, start_time, end_time]
+			`INSERT INTO Announcements (content, start_time, end_time) 
+			VALUES ($1, $2, $3) RETURNING *`,
+			[ content, start_time, end_time]
 		);
 
 		if (insertAnnouncement.rows.length === 0) {
