@@ -5,7 +5,9 @@ The **Smart Mess Management System** is a web-based platform designed to streaml
 
 ### 🎥 **Project Demo**  
 🔗 **Watch the Video Here:** [Click to Watch](https://drive.google.com/file/d/13ZOVgVFBcLtaX2h_zKebB6yhSfyFMTd-/view?usp=sharing)
-**Deployed Links** are available to the Side of the GitHub Repo Page
+
+- **Frontend:** [Vercel](https://vashisht-frontend-beta.vercel.app)  
+- **Admin Panel:** [Vercel](https://vashisht-admin.vercel.app)
 
 ## Features
 ### **Special Item Booking System**
@@ -78,4 +80,4 @@ npm run dev
 - **Thakur Sai Madan Gopal** (CS22B2023)
 - **Gande Ashrith** (CS22B2025)
 - **Manaswini** (CS22B2030)
-this project aims to simply the process to book special item for IIITDM students this can also be enhanced used as 
+this project aims to simply the process to book special item for IIITDM students.
