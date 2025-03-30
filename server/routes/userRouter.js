@@ -274,6 +274,7 @@ userRouter.post("/create-order", authenticateFirebaseUser,async (req, res) => {
 //checkout,payment
 userRouter.post("/checkout", authenticateFirebaseUser,async (req, res) => {
 	try {
+		console.log("in checkout");
 		const { order_id } = req.body;
 		if (!order_id)
 			return res.status(400).json({ message: "Order ID is required" });
@@ -318,6 +319,8 @@ userRouter.post("/checkout", authenticateFirebaseUser,async (req, res) => {
 			success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`, //these urls are of frontend ok
 			cancel_url: `${process.env.FRONTEND_URL}/cancel`,
 		});
+		
+		console.log("session url", session.url);
 		res.json({ sessionUrl: session.url });
 	} catch (err) {
 		console.log(err);

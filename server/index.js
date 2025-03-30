@@ -7,7 +7,12 @@ import adminRouter from "./routes/adminRouter.js";
 import userRouter from "./routes/userRouter.js";
 import connectCloudinary from "./middleware/cloudinary.js";
 
-app.use(cors());
+app.use(cors(
+	{
+		origin:[process.env.FRONTEND_URL, process.env.ADMIN_URL],
+		methods: ["GET", "POST", "PUT", "DELETE"],
+	}
+));
 app.use(express.json());
 connectCloudinary();
 

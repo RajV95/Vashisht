@@ -171,17 +171,18 @@ const Home = () => {
       const resp = await axiosInstance.post('/api/user/create-order', { items: selectedItems });
       console.log("Response from Db", resp.data.order_id);
       navigate("/checkout", { state: { items: selectedItems, totalPrice } });
-      const payment = await axiosInstance.post('/api/user/checkout', {
-        order_id: resp.data.order_id,
-        success_url: `${window.location.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${window.location.origin}/payment-canceled`
-      });
+      const payment = await axiosInstance.post("/api/user/checkout", {
+				order_id: resp.data.order_id,
+				success_url: `${import.meta.env.VITE_FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+				cancel_url: `${import.meta.env.VITE_FRONTEND_URL}/payment-canceled`,
+			});
       // 3. Store order info temporarily
       localStorage.setItem('pendingOrder', JSON.stringify({
         orderId: resp.data.order_id,
         items: selectedItems,
         total: totalPrice
       }));
+      console.log("Payment response:", payment.data.sessionUrl);
       window.location.replace(payment.data.sessionUrl);
     }
 
