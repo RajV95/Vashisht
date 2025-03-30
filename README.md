@@ -6,8 +6,9 @@ The **Smart Mess Management System** is a web-based platform designed to streaml
 ### 🎥 **Project Demo**  
 🔗 **Watch the Video Here:** [Click to Watch](https://drive.google.com/file/d/13ZOVgVFBcLtaX2h_zKebB6yhSfyFMTd-/view?usp=sharing)
 
-- **Frontend:** [Vercel](https://vashisht-frontend-beta.vercel.app)  
-- **Admin Panel:** [Vercel](https://vashisht-admin.vercel.app)
+<p><strong>Frontend:</strong> <a href="https://vashisht-frontend-beta.vercel.app" target="_blank">Vashisht Frontend</a></p>
+<p><strong>Admin Panel:</strong> <a href="https://vashisht-admin.vercel.app" target="_blank">Vashisht Admin</a></p>
+
 
 ## Features
 ### **Special Item Booking System**
